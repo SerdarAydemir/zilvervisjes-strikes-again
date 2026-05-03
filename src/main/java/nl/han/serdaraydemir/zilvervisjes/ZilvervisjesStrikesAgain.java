@@ -19,7 +19,7 @@ public class ZilvervisjesStrikesAgain extends YaegerGame {
 
     @Override
     public void setupScenes() {
-        addScene(0, new StartScene());
+        addScene(0, new StartScene(this));
         addScene(1, new GameScene());
     }
 }

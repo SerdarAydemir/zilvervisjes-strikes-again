@@ -1,6 +1,10 @@
 package nl.han.serdaraydemir.zilvervisjes.scenes;
-
+//First Step Creating Game Scene
 import com.github.hanyaeger.api.scenes.DynamicScene;
+//SecondStep adding Archivist
+import com.github.hanyaeger.api.Coordinate2D;
+import javafx.scene.paint.Color;
+import nl.han.serdaraydemir.zilvervisjes.entities.Archivist;
 
 public class GameScene extends DynamicScene {
 
@@ -11,6 +15,7 @@ public class GameScene extends DynamicScene {
 
     @Override
     public void setupEntities() {
-        //Entities (Archivist, Silverfish, Documents) will be added here
+        var archivist = new Archivist(new Coordinate2D(getWidth() / 2, getHeight() / 2));
+        addEntity(archivist);
     }
 }
