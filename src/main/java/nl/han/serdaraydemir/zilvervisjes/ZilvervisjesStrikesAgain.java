@@ -2,6 +2,8 @@ package nl.han.serdaraydemir.zilvervisjes;
 
 import com.github.hanyaeger.api.YaegerGame;
 import com.github.hanyaeger.api.Size;
+import nl.han.serdaraydemir.zilvervisjes.scenes.GameScene;
+import nl.han.serdaraydemir.zilvervisjes.scenes.StartScene;
 
 public class ZilvervisjesStrikesAgain extends YaegerGame {
 
@@ -17,6 +19,7 @@ public class ZilvervisjesStrikesAgain extends YaegerGame {
 
     @Override
     public void setupScenes() {
-        // Scenes will be added here later
+        addScene(0, new StartScene());
+        addScene(1, new GameScene());
     }
 }
