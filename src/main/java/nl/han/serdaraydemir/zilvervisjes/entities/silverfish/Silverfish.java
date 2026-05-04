@@ -15,7 +15,7 @@ import com.github.hanyaeger.api.TimerContainer;
 import java.util.List;
 
 public abstract class Silverfish extends DynamicRectangleEntity
-        implements SceneBorderCrossingWatcher, Collided, TimerContainer {
+        implements SceneBorderCrossingWatcher, Collided, Collider, TimerContainer {
 
     // 1. STATIC CONSTANTS
     private static final int TARGET_REFRESH_INTERVAL_MS = 500;

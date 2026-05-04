@@ -44,7 +44,7 @@ public class GameScene extends DynamicScene {
         addEntity(new CommonSilverfish(new Coordinate2D(250, 30), documents));
 
         // Archivist in the center
-        var archivist = new Archivist(new Coordinate2D(getWidth() / 2, getHeight() / 2));
+        var archivist = new Archivist(new Coordinate2D(getWidth() / 2, getHeight() / 2), this::addEntity);
         addEntity(archivist);
     }
 }
