@@ -2,9 +2,10 @@ package nl.han.serdaraydemir.zilvervisjes.entities.documents;
 
 import com.github.hanyaeger.api.Coordinate2D;
 import com.github.hanyaeger.api.entities.impl.RectangleEntity;
-import javafx.scene.paint.Color;
+//Step 2 Adding Collider
+import com.github.hanyaeger.api.entities.Collider;
 
-public abstract class Document extends RectangleEntity {
+public abstract class Document extends RectangleEntity implements Collider {
 
     private int health;
     private final int maxHealth;

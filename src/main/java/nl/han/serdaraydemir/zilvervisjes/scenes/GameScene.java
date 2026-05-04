@@ -1,27 +1,28 @@
 package nl.han.serdaraydemir.zilvervisjes.scenes;
-//First Step Creating Game Scene
-import com.github.hanyaeger.api.scenes.DynamicScene;
-//SecondStep adding Archivist
+
 import com.github.hanyaeger.api.Coordinate2D;
+import com.github.hanyaeger.api.scenes.DynamicScene;
 import javafx.scene.paint.Color;
 import nl.han.serdaraydemir.zilvervisjes.entities.Archivist;
-// Third step adding Dossier and Book
-import nl.han.serdaraydemir.zilvervisjes.entities.documents.Book;
-import nl.han.serdaraydemir.zilvervisjes.entities.documents.Dossier;
-// Fourth step adding Holes
 import nl.han.serdaraydemir.zilvervisjes.entities.Hole;
+import nl.han.serdaraydemir.zilvervisjes.entities.documents.Book;
+import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
+import nl.han.serdaraydemir.zilvervisjes.entities.documents.Dossier;
+import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.CommonSilverfish;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameScene extends DynamicScene {
 
     @Override
     public void setupScene() {
-        setBackgroundColor(javafx.scene.paint.Color.web("#1a1612"));
+        setBackgroundColor(Color.web("#1a1612"));
     }
 
     @Override
     public void setupEntities() {
-        // Holes 4 on the top wall, 1 on each side wall
+        // Holes: 4 on the top wall, 1 on each side wall
         addEntity(new Hole(new Coordinate2D(250, 20)));
         addEntity(new Hole(new Coordinate2D(500, 20)));
         addEntity(new Hole(new Coordinate2D(780, 20)));
@@ -29,13 +30,20 @@ public class GameScene extends DynamicScene {
         addEntity(new Hole(new Coordinate2D(20, 360)));
         addEntity(new Hole(new Coordinate2D(1240, 360)));
 
-        //Documents: 2 Dossiers and 2 Books
-        addEntity(new Dossier(new Coordinate2D(200,200)));
-        addEntity(new Dossier(new Coordinate2D(1050,200)));
-        addEntity(new Book(new Coordinate2D(300,500)));
-        addEntity(new Book(new Coordinate2D(900,500)));
+        // Documents: 2 Dossiers and 2 Books
+        List<Document> documents = new ArrayList<>();
+        documents.add(new Dossier(new Coordinate2D(200, 200)));
+        documents.add(new Dossier(new Coordinate2D(1050, 200)));
+        documents.add(new Book(new Coordinate2D(300, 500)));
+        documents.add(new Book(new Coordinate2D(900, 500)));
+        for (Document doc : documents) {
+            addEntity(doc);
+        }
 
-        //Archivist in the center
+        // Test silverfish from top-left hole
+        addEntity(new CommonSilverfish(new Coordinate2D(250, 30), documents));
+
+        // Archivist in the center
         var archivist = new Archivist(new Coordinate2D(getWidth() / 2, getHeight() / 2));
         addEntity(archivist);
     }
