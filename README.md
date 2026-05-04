@@ -1,7 +1,7 @@
 # Zilvervisjes: Strikes Again
 
 Top-down survival game ontwikkeld als eindopdracht voor het vak
-**Object Georiënteerd Programmeren (2025 P3A)** aan de Hogeschool van
+**Object Georiënteerd Programmeren aan de Hogeschool van
 Arnhem en Nijmegen.
 
 ## Spelconcept
