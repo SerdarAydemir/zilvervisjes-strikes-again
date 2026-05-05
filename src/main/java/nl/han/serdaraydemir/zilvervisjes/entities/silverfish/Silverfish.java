@@ -49,6 +49,7 @@ public abstract class Silverfish extends DynamicRectangleEntity
             if (other instanceof Document doc && !doc.isDestroyed()) {
                 setSpeed(0);
                 attackingTarget = doc;
+                currentTarget = doc;
                 return;
             }
         }
@@ -70,11 +71,23 @@ public abstract class Silverfish extends DynamicRectangleEntity
         return pointsValue;
     }
 
+    public int getHealth() {
+        return health;
+    }
+
     // 5. PROTECTED METHODS — For subclasses
     protected abstract double getSpeedValue();
 
     protected int getAttackDamage() {
         return 1;
+    }
+
+    protected void onTargetAngleUpdated(double angle) {
+
+    }
+
+    protected List<Document> getTargets() {
+        return targets;
     }
 
     protected Document findClosestDocumentTo(Coordinate2D from) {
@@ -105,11 +118,10 @@ public abstract class Silverfish extends DynamicRectangleEntity
             return;
         }
 
-        if (closest != currentTarget) {
-            currentTarget = closest;
-            double angle = getAnchorLocation().angleTo(closest.getAnchorLocation());
-            setMotion(getSpeedValue(), angle);
-        }
+        currentTarget = closest;
+        double angle = getAnchorLocation().angleTo(closest.getAnchorLocation());
+        onTargetAngleUpdated(angle);
+        setMotion(getSpeedValue(), angle);
     }
 
     private void attackTick() {
