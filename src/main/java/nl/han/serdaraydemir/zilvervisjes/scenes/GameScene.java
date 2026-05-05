@@ -11,6 +11,7 @@ import nl.han.serdaraydemir.zilvervisjes.entities.documents.Dossier;
 import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.CommonSilverfish;
 import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.StripedSilverfish;
 import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Firebrat;
+import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Paperfish;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class GameScene extends DynamicScene {
         addEntity(new CommonSilverfish(new Coordinate2D(250, 30), documents));
         addEntity(new StripedSilverfish(new Coordinate2D(780, 30), documents));
         addEntity(new Firebrat(new Coordinate2D(500, 30), documents));
+        addEntity(new Paperfish(new Coordinate2D(1030, 30), documents));
 
         // Archivist in the center
         var archivist = new Archivist(new Coordinate2D(getWidth() / 2, getHeight() / 2), this::addEntity);
