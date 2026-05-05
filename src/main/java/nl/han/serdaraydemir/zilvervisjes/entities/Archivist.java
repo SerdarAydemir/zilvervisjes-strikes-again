@@ -8,12 +8,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import com.github.hanyaeger.api.entities.SceneBorderTouchingWatcher;
 import com.github.hanyaeger.api.scenes.SceneBorder;
-// Second Step Adding Weapom
+// Second Step Adding InsectSpray
 import com.github.hanyaeger.api.entities.YaegerEntity;
 import nl.han.serdaraydemir.zilvervisjes.entities.projectiles.Projectile;
 import nl.han.serdaraydemir.zilvervisjes.entities.weapons.InsectSpray;
 import nl.han.serdaraydemir.zilvervisjes.entities.weapons.Weapon;
 import java.util.function.Consumer;
+// Third Step adding UVLamp
+import nl.han.serdaraydemir.zilvervisjes.entities.weapons.UVLamp;
 
 import java.util.Set;
 
@@ -21,6 +23,7 @@ public class Archivist extends DynamicRectangleEntity implements KeyListener, Sc
 
     private static final double MOVEMENT_SPEED = 4;
     private final Weapon insectSpray;
+    private final UVLamp uvLamp;
     private final Consumer<YaegerEntity> projectileSpawner;
     private double facingAngle = 0d;
 
@@ -30,6 +33,7 @@ public class Archivist extends DynamicRectangleEntity implements KeyListener, Sc
         setHeight(30);
         setFill(Color.web("#3a6e8a"));
         this.insectSpray = new InsectSpray();
+        this.uvLamp = new UVLamp();
         this.projectileSpawner = projectileSpawner;
     }
 
@@ -54,6 +58,9 @@ public class Archivist extends DynamicRectangleEntity implements KeyListener, Sc
         if (pressedKeys.contains(KeyCode.SPACE)) {
             fireInsectSpray();
         }
+        if (pressedKeys.contains(KeyCode.X)) {
+            fireUVLamp();
+        }
     }
 
     private void fireInsectSpray() {
@@ -61,6 +68,14 @@ public class Archivist extends DynamicRectangleEntity implements KeyListener, Sc
         Projectile projectile = insectSpray.fire(getAnchorLocation(), facingAngle, now);
         if (projectile != null) {
             projectileSpawner.accept(projectile);
+        }
+    }
+
+    private void fireUVLamp() {
+        long now = System.nanoTime();
+        Projectile beam = uvLamp.fire(getAnchorLocation(), facingAngle, now);
+        if (beam != null) {
+            projectileSpawner.accept(beam);
         }
     }
 
