@@ -32,11 +32,22 @@ public abstract class Projectile extends DynamicRectangleEntity implements Scene
 
     @Override
     public void onCollision(List<Collider> collidingObjects) {
+        boolean hit = false;
         for (Collider other : collidingObjects) {
             if (other instanceof Silverfish silverfish) {
                 silverfish.takeDamage(damage);
-                return;
+                hit = true;
+                if (!isAreaEffect()) {
+                    break;
+                }
             }
         }
+        if (hit) {
+            remove();
+        }
+    }
+
+    protected boolean isAreaEffect() {
+        return false;
     }
 }

@@ -16,4 +16,9 @@ public class SprayCloud extends Projectile {
         setFill(Color.web("a8d49d"));
         setOpacity(0.6);
     }
+
+    @Override
+    protected boolean isAreaEffect() {
+        return true;
+    }
 }
