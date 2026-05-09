@@ -18,4 +18,15 @@ public class Hole extends RectangleEntity {
     public Coordinate2D getSpawnLocation() {
         return new Coordinate2D(getAnchorLocation().getX(), getAnchorLocation().getY());
     }
+
+    public double getEntryAngle() {
+        Coordinate2D loc = getAnchorLocation();
+        if (loc.getY() < 50) {
+            return 0;       // top wall, silverfish moves down
+        }
+        if (loc.getX() < 50) {
+            return 90;      // left wall, silverfish moves right
+        }
+        return 270;          // right wall, silverfish moves left
+    }
 }
