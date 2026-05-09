@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import nl.han.serdaraydemir.zilvervisjes.ZilvervisjesStrikesAgain;
+import javafx.application.Platform;
 
 import java.util.Set;
 
@@ -46,9 +47,9 @@ public class GameOverScene extends StaticScene implements KeyListener {
     @Override
     public void onPressedKeysChange(Set<KeyCode> pressedKeys) {
         if (pressedKeys.contains(KeyCode.ENTER)) {
-            game.startNewGame();
+            Platform.runLater(game::startNewGame);
         } else if (pressedKeys.contains(KeyCode.M)) {
-            game.setActiveScene(0);
+            Platform.runLater(() -> game.setActiveScene(0));
         }
     }
 
