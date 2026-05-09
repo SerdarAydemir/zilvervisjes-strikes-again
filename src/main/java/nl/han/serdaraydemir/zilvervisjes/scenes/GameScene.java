@@ -2,6 +2,8 @@ package nl.han.serdaraydemir.zilvervisjes.scenes;
 
 import com.github.hanyaeger.api.Coordinate2D;
 import com.github.hanyaeger.api.EntitySpawnerContainer;
+import com.github.hanyaeger.api.Timer;
+import com.github.hanyaeger.api.TimerContainer;
 import com.github.hanyaeger.api.scenes.DynamicScene;
 import javafx.scene.paint.Color;
 import nl.han.serdaraydemir.zilvervisjes.entities.Archivist;
@@ -9,18 +11,22 @@ import nl.han.serdaraydemir.zilvervisjes.entities.Hole;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Book;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Dossier;
+import nl.han.serdaraydemir.zilvervisjes.game.Phase;
 import nl.han.serdaraydemir.zilvervisjes.spawners.SilverfishSpawner;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameScene extends DynamicScene implements EntitySpawnerContainer {
+public class GameScene extends DynamicScene implements EntitySpawnerContainer, TimerContainer {
 
-    private static final long SPAWN_INTERVAL_MS = 2000;
+    private static final int GEMIDDELD_START_MS = 15_000;
+    private static final int EXTREEM_START_MS = 30_000;
 
     private final List<Hole> holes = new ArrayList<>();
     private final List<Document> documents = new ArrayList<>();
 
+    private SilverfishSpawner spawner;
+    private Phase currentPhase = Phase.KALM;
 
     @Override
     public void setupScene() {
@@ -53,6 +59,45 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer {
 
     @Override
     public void setupEntitySpawners() {
-        addEntitySpawner(new SilverfishSpawner(SPAWN_INTERVAL_MS, holes, documents));
+        spawner = new SilverfishSpawner(holes, documents);
+        addEntitySpawner(spawner);
+    }
+
+    @Override
+    public void setupTimers() {
+        addTimer(new PhaseTransitionTimer(GEMIDDELD_START_MS, Phase.GEMIDDELD));
+        addTimer(new PhaseTransitionTimer(EXTREEM_START_MS, Phase.EXTREEM));
+    }
+
+    public Phase getCurrentPhase() {
+        return currentPhase;
+    }
+
+    private void transitionTo(Phase phase) {
+        if (currentPhase == phase) {
+            return;
+        }
+        currentPhase = phase;
+        spawner.setPhase(phase);
+    }
+
+    private class PhaseTransitionTimer extends Timer {
+
+        private final Phase targetPhase;
+        private boolean fired = false;
+
+        protected PhaseTransitionTimer(int delayMs, Phase targetPhase) {
+            super(delayMs);
+            this.targetPhase = targetPhase;
+        }
+
+        @Override
+        public void onAnimationUpdate(long timestamp) {
+            if (fired) {
+                return;
+            }
+            fired = true;
+            transitionTo(targetPhase);
+        }
     }
 }

@@ -37,6 +37,7 @@ public class SprayCloud extends Projectile implements TimerContainer {
 
         @Override
         public void onAnimationUpdate(long timestamp) {
+            markExpired();
             setVisible(false);
             setSpeed(0);
             remove();

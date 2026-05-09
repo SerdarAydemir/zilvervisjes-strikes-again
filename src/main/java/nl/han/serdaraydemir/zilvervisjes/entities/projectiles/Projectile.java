@@ -16,6 +16,7 @@ public abstract class Projectile extends DynamicRectangleEntity implements Scene
 
     private final int damage;
     private final Set<Silverfish> alreadyHit = new HashSet<>();
+    private boolean expired = false;
 
     protected Projectile(Coordinate2D location, double speed, double angle, int damage) {
         super(location);
@@ -27,13 +28,21 @@ public abstract class Projectile extends DynamicRectangleEntity implements Scene
         return damage;
     }
 
+    protected void markExpired() {
+        expired = true;
+    }
+
     @Override
     public void notifyBoundaryCrossing(SceneBorder border) {
+        expired = true;
         remove();
     }
 
     @Override
     public void onCollision(List<Collider> collidingObjects) {
+        if (expired) {
+            return;
+        }
         for (Collider other : collidingObjects) {
             if (!(other instanceof Silverfish silverfish)) continue;
             if (alreadyHit.contains(silverfish)) continue;

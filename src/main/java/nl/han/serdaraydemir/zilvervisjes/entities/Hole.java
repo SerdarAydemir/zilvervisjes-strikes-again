@@ -16,7 +16,19 @@ public class Hole extends RectangleEntity {
     }
 
     public Coordinate2D getSpawnLocation() {
-        return new Coordinate2D(getAnchorLocation().getX(), getAnchorLocation().getY());
+        Coordinate2D loc = getAnchorLocation();
+        double x = loc.getX();
+        double y = loc.getY();
+
+        if (y < 50) {
+            y += SIZE + 10;
+        } else if (x < 50) {
+            x += SIZE + 10;
+        } else {
+            x -= 30;
+        }
+
+        return new Coordinate2D(x, y);
     }
 
     public double getEntryAngle() {

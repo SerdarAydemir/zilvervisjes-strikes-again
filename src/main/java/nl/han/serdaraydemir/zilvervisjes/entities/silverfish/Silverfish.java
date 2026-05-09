@@ -61,6 +61,9 @@ public abstract class Silverfish extends DynamicRectangleEntity
     }
 
     public void takeDamage(int amount) {
+        if (health <= 0) {
+            return;
+        }
         health -= amount;
         if (health <= 0) {
             remove();

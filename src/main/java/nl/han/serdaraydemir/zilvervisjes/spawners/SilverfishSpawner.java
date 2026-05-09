@@ -5,8 +5,11 @@ import com.github.hanyaeger.api.entities.EntitySpawner;
 import nl.han.serdaraydemir.zilvervisjes.entities.Hole;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
 import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.CommonSilverfish;
+import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Firebrat;
+import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Paperfish;
 import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Silverfish;
 import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.StripedSilverfish;
+import nl.han.serdaraydemir.zilvervisjes.game.Phase;
 
 import java.util.List;
 import java.util.Random;
@@ -16,11 +19,17 @@ public class SilverfishSpawner extends EntitySpawner {
     private final List<Hole> holes;
     private final List<Document> documents;
     private final Random random = new Random();
+    private Phase currentPhase = Phase.KALM;
 
-    public SilverfishSpawner(long intervalInMs, List<Hole> holes, List<Document> documents) {
-        super(intervalInMs);
+    public SilverfishSpawner(List<Hole> holes, List<Document> documents) {
+        super(Phase.KALM.getSpawnIntervalMs());
         this.holes = holes;
         this.documents = documents;
+    }
+
+    public void setPhase(Phase phase) {
+        this.currentPhase = phase;
+        setIntervalInMs(phase.getSpawnIntervalMs());
     }
 
     @Override
@@ -34,7 +43,39 @@ public class SilverfishSpawner extends EntitySpawner {
     }
 
     private Silverfish createSilverfish(Coordinate2D location) {
-        if (random.nextInt(100) < 30) {
+        int roll = random.nextInt(100);
+        return switch (currentPhase) {
+            case KALM -> spawnForKalm(roll, location);
+            case GEMIDDELD -> spawnForGemiddeld(roll, location);
+            case EXTREEM -> spawnForExtreem(roll, location);
+        };
+    }
+
+    private Silverfish spawnForKalm(int roll, Coordinate2D location) {
+        if (roll < 30) {
+            return new StripedSilverfish(location, documents);
+        }
+        return new CommonSilverfish(location, documents);
+    }
+
+    private Silverfish spawnForGemiddeld(int roll, Coordinate2D location) {
+        if (roll < 25) {
+            return new Paperfish(location, documents);
+        }
+        if (roll < 55) {
+            return new StripedSilverfish(location, documents);
+        }
+        return new CommonSilverfish(location, documents);
+    }
+
+    private Silverfish spawnForExtreem(int roll, Coordinate2D location) {
+        if (roll < 15) {
+            return new Firebrat(location, documents);
+        }
+        if (roll < 40) {
+            return new Paperfish(location, documents);
+        }
+        if (roll < 65) {
             return new StripedSilverfish(location, documents);
         }
         return new CommonSilverfish(location, documents);
