@@ -10,6 +10,7 @@ import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Paperfish;
 import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Silverfish;
 import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.StripedSilverfish;
 import nl.han.serdaraydemir.zilvervisjes.game.Phase;
+import java.util.function.Consumer;
 
 import java.util.List;
 import java.util.Random;
@@ -19,12 +20,14 @@ public class SilverfishSpawner extends EntitySpawner {
     private final List<Hole> holes;
     private final List<Document> documents;
     private final Random random = new Random();
+    private final Consumer<Silverfish> deathListener;
     private Phase currentPhase = Phase.KALM;
 
-    public SilverfishSpawner(List<Hole> holes, List<Document> documents) {
+    public SilverfishSpawner(List<Hole> holes, List<Document> documents, Consumer<Silverfish> deathListener) {
         super(Phase.KALM.getSpawnIntervalMs());
         this.holes = holes;
         this.documents = documents;
+        this.deathListener = deathListener;
     }
 
     public void setPhase(Phase phase) {
@@ -39,7 +42,9 @@ public class SilverfishSpawner extends EntitySpawner {
         }
         Hole hole = holes.get(random.nextInt(holes.size()));
         Coordinate2D location = hole.getSpawnLocation();
-        spawn(createSilverfish(location));
+        Silverfish silverfish = createSilverfish(location);
+        silverfish.setDeathListener(deathListener);
+        spawn(silverfish);
     }
 
     private Silverfish createSilverfish(Coordinate2D location) {

@@ -11,6 +11,8 @@ import com.github.hanyaeger.api.entities.Collider;
 // Step 3 Adding Timer
 import com.github.hanyaeger.api.Timer;
 import com.github.hanyaeger.api.TimerContainer;
+// Step 4 Adding Score Function
+import java.util.function.Consumer;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public abstract class Silverfish extends DynamicRectangleEntity
     // 2. INSTANCE FIELDS
     private final List<Document> targets;
     private final int pointsValue;
+    private Consumer<Silverfish> deathListener = silverfish -> {};
     private int health;
     private Document currentTarget = null;
     private Document attackingTarget = null;
@@ -66,6 +69,7 @@ public abstract class Silverfish extends DynamicRectangleEntity
         }
         health -= amount;
         if (health <= 0) {
+            deathListener.accept(this);
             remove();
         }
     }
@@ -76,6 +80,12 @@ public abstract class Silverfish extends DynamicRectangleEntity
 
     public int getHealth() {
         return health;
+    }
+
+    public void setDeathListener(Consumer<Silverfish> listener) {     // ← BU 5 SATIR YENİ
+        if (listener != null) {
+            this.deathListener = listener;
+        }
     }
 
     // 5. PROTECTED METHODS — For subclasses

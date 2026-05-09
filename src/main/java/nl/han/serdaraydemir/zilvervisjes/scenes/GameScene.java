@@ -8,24 +8,31 @@ import com.github.hanyaeger.api.scenes.DynamicScene;
 import javafx.scene.paint.Color;
 import nl.han.serdaraydemir.zilvervisjes.entities.Archivist;
 import nl.han.serdaraydemir.zilvervisjes.entities.Hole;
+import nl.han.serdaraydemir.zilvervisjes.entities.dashboard.PhaseDisplay;
+import nl.han.serdaraydemir.zilvervisjes.entities.dashboard.ScoreDisplay;
+import nl.han.serdaraydemir.zilvervisjes.entities.dashboard.TimeDisplay;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Book;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Dossier;
 import nl.han.serdaraydemir.zilvervisjes.game.Phase;
 import nl.han.serdaraydemir.zilvervisjes.spawners.SilverfishSpawner;
+import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Silverfish;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameScene extends DynamicScene implements EntitySpawnerContainer, TimerContainer {
 
-    private static final int GEMIDDELD_START_MS = 15_000;
-    private static final int EXTREEM_START_MS = 30_000;
+    private static final int GEMIDDELD_START_MS = 60_000;
+    private static final int EXTREEM_START_MS = 150_000;
 
     private final List<Hole> holes = new ArrayList<>();
     private final List<Document> documents = new ArrayList<>();
 
     private SilverfishSpawner spawner;
+    private ScoreDisplay scoreDisplay;
+    private PhaseDisplay phaseDisplay;
+    private TimeDisplay timeDisplay;
     private Phase currentPhase = Phase.KALM;
 
     @Override
@@ -55,11 +62,20 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
 
         var archivist = new Archivist(new Coordinate2D(getWidth() / 2, getHeight() / 2), this::addEntity);
         addEntity(archivist);
+
+        scoreDisplay = new ScoreDisplay(new Coordinate2D(20, 15));
+        addEntity(scoreDisplay);
+
+        phaseDisplay = new PhaseDisplay(new Coordinate2D(getWidth() / 2, 15), currentPhase);
+        addEntity(phaseDisplay);
+
+        timeDisplay = new TimeDisplay(new Coordinate2D(getWidth() - 20, 15));
+        addEntity(timeDisplay);
     }
 
     @Override
     public void setupEntitySpawners() {
-        spawner = new SilverfishSpawner(holes, documents);
+        spawner = new SilverfishSpawner(holes, documents, this::onSilverfishKilled);
         addEntitySpawner(spawner);
     }
 
@@ -67,10 +83,21 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
     public void setupTimers() {
         addTimer(new PhaseTransitionTimer(GEMIDDELD_START_MS, Phase.GEMIDDELD));
         addTimer(new PhaseTransitionTimer(EXTREEM_START_MS, Phase.EXTREEM));
+        addTimer(new TimeTickTimer());
     }
 
     public Phase getCurrentPhase() {
         return currentPhase;
+    }
+
+    public void addScore(int points) {
+        if (scoreDisplay != null) {
+            scoreDisplay.addPoints(points);
+        }
+    }
+
+    private void onSilverfishKilled(Silverfish silverfish) {
+        addScore(silverfish.getPointsValue());
     }
 
     private void transitionTo(Phase phase) {
@@ -79,6 +106,9 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
         }
         currentPhase = phase;
         spawner.setPhase(phase);
+        if (phaseDisplay != null) {
+            phaseDisplay.update(phase);
+        }
     }
 
     private class PhaseTransitionTimer extends Timer {
@@ -98,6 +128,20 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
             }
             fired = true;
             transitionTo(targetPhase);
+        }
+    }
+
+    private class TimeTickTimer extends Timer {
+
+        protected TimeTickTimer() {
+            super(1000);
+        }
+
+        @Override
+        public void onAnimationUpdate(long timestamp) {
+            if (timeDisplay != null) {
+                timeDisplay.tick();
+            }
         }
     }
 }
