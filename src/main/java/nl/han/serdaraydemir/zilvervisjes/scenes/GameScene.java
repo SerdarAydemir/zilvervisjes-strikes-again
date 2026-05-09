@@ -6,6 +6,7 @@ import com.github.hanyaeger.api.Timer;
 import com.github.hanyaeger.api.TimerContainer;
 import com.github.hanyaeger.api.scenes.DynamicScene;
 import javafx.scene.paint.Color;
+import nl.han.serdaraydemir.zilvervisjes.ZilvervisjesStrikesAgain;
 import nl.han.serdaraydemir.zilvervisjes.entities.Archivist;
 import nl.han.serdaraydemir.zilvervisjes.entities.Hole;
 import nl.han.serdaraydemir.zilvervisjes.entities.dashboard.PhaseDisplay;
@@ -14,18 +15,19 @@ import nl.han.serdaraydemir.zilvervisjes.entities.dashboard.TimeDisplay;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Book;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Dossier;
+import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Silverfish;
 import nl.han.serdaraydemir.zilvervisjes.game.Phase;
 import nl.han.serdaraydemir.zilvervisjes.spawners.SilverfishSpawner;
-import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Silverfish;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameScene extends DynamicScene implements EntitySpawnerContainer, TimerContainer {
 
-    private static final int GEMIDDELD_START_MS = 60_000;
-    private static final int EXTREEM_START_MS = 150_000;
+    private static final int GEMIDDELD_START_MS = 15_000;
+    private static final int EXTREEM_START_MS = 30_000;
 
+    private final ZilvervisjesStrikesAgain game;
     private final List<Hole> holes = new ArrayList<>();
     private final List<Document> documents = new ArrayList<>();
 
@@ -34,6 +36,11 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
     private PhaseDisplay phaseDisplay;
     private TimeDisplay timeDisplay;
     private Phase currentPhase = Phase.KALM;
+    private boolean gameOverTriggered = false;
+
+    public GameScene(ZilvervisjesStrikesAgain game) {
+        this.game = game;
+    }
 
     @Override
     public void setupScene() {
@@ -57,6 +64,7 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
         documents.add(new Book(new Coordinate2D(300, 500)));
         documents.add(new Book(new Coordinate2D(900, 500)));
         for (Document doc : documents) {
+            doc.setDestructionListener(this::onDocumentDestroyed);
             addEntity(doc);
         }
 
@@ -98,6 +106,33 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
 
     private void onSilverfishKilled(Silverfish silverfish) {
         addScore(silverfish.getPointsValue());
+    }
+
+    private void onDocumentDestroyed(Document document) {
+        if (gameOverTriggered) {
+            return;
+        }
+        if (allDocumentsDestroyed()) {
+            gameOverTriggered = true;
+            int finalScore = scoreDisplay != null ? scoreDisplay.getScore() : 0;
+            String finalTime = timeDisplay != null ? formatTime(timeDisplay.getElapsedSeconds()) : "00:00";
+            game.triggerGameOver(finalScore, finalTime);
+        }
+    }
+
+    private boolean allDocumentsDestroyed() {
+        for (Document doc : documents) {
+            if (!doc.isDestroyed()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String formatTime(int totalSeconds) {
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
     private void transitionTo(Phase phase) {
