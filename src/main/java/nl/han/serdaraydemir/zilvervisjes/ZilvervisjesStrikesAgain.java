@@ -29,7 +29,11 @@ public class ZilvervisjesStrikesAgain extends YaegerGame {
     }
 
     public void startNewGame() {
-        addScene(SCENE_GAME, new GameScene(this));
+        startNewGame(true);
+    }
+
+    public void startNewGame(boolean skipOpening) {
+        addScene(SCENE_GAME, new GameScene(this, skipOpening));
         setActiveScene(SCENE_GAME);
     }
 

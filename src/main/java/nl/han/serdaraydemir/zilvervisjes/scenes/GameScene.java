@@ -15,6 +15,7 @@ import nl.han.serdaraydemir.zilvervisjes.entities.dashboard.TimeDisplay;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Book;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Dossier;
+import nl.han.serdaraydemir.zilvervisjes.entities.overlay.OpeningSequence;
 import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Silverfish;
 import nl.han.serdaraydemir.zilvervisjes.game.Phase;
 import nl.han.serdaraydemir.zilvervisjes.spawners.SilverfishSpawner;
@@ -28,6 +29,7 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
     private static final int EXTREEM_START_MS = 30_000;
 
     private final ZilvervisjesStrikesAgain game;
+    private final boolean skipOpening;
     private final List<Hole> holes = new ArrayList<>();
     private final List<Document> documents = new ArrayList<>();
 
@@ -35,11 +37,21 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
     private ScoreDisplay scoreDisplay;
     private PhaseDisplay phaseDisplay;
     private TimeDisplay timeDisplay;
+    private OpeningSequence opening;
+    private PhaseTransitionTimer gemiddeldTimer;
+    private PhaseTransitionTimer extreemTimer;
+    private TimeTickTimer timeTickTimer;
     private Phase currentPhase = Phase.KALM;
     private boolean gameOverTriggered = false;
+    private boolean openingComplete = false;
 
     public GameScene(ZilvervisjesStrikesAgain game) {
+        this(game, false);
+    }
+
+    public GameScene(ZilvervisjesStrikesAgain game, boolean skipOpening) {
         this.game = game;
+        this.skipOpening = skipOpening;
     }
 
     @Override
@@ -79,19 +91,38 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
 
         timeDisplay = new TimeDisplay(new Coordinate2D(getWidth() - 20, 15));
         addEntity(timeDisplay);
+
+        if (!skipOpening) {
+            opening = new OpeningSequence(getWidth(), getHeight(), this::addEntity, this::startGameplay);
+            opening.install();
+        }
     }
 
     @Override
     public void setupEntitySpawners() {
         spawner = new SilverfishSpawner(holes, documents, this::onSilverfishKilled);
         addEntitySpawner(spawner);
+        if (!skipOpening) {
+            spawner.pause();
+        }
     }
 
     @Override
     public void setupTimers() {
-        addTimer(new PhaseTransitionTimer(GEMIDDELD_START_MS, Phase.GEMIDDELD));
-        addTimer(new PhaseTransitionTimer(EXTREEM_START_MS, Phase.EXTREEM));
-        addTimer(new TimeTickTimer());
+        gemiddeldTimer = new PhaseTransitionTimer(GEMIDDELD_START_MS, Phase.GEMIDDELD);
+        extreemTimer = new PhaseTransitionTimer(EXTREEM_START_MS, Phase.EXTREEM);
+        timeTickTimer = new TimeTickTimer();
+        addTimer(gemiddeldTimer);
+        addTimer(extreemTimer);
+        addTimer(timeTickTimer);
+        if (skipOpening) {
+            openingComplete = true;
+        } else {
+            gemiddeldTimer.pause();
+            extreemTimer.pause();
+            timeTickTimer.pause();
+            addTimer(opening.createDriver());
+        }
     }
 
     public Phase getCurrentPhase() {
@@ -144,6 +175,17 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
         if (phaseDisplay != null) {
             phaseDisplay.update(phase);
         }
+    }
+
+    private void startGameplay() {
+        if (openingComplete) {
+            return;
+        }
+        openingComplete = true;
+        spawner.resume();
+        gemiddeldTimer.resume();
+        extreemTimer.resume();
+        timeTickTimer.resume();
     }
 
     private class PhaseTransitionTimer extends Timer {
