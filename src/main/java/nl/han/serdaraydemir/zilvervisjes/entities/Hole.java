@@ -4,12 +4,23 @@ import com.github.hanyaeger.api.Coordinate2D;
 import com.github.hanyaeger.api.entities.impl.RectangleEntity;
 import javafx.scene.paint.Color;
 
+/**
+ * Een gat in de muur waaruit zilvervisjes het speelveld binnenkomen.
+ * Wordt visueel weergegeven als een kleine donkere rechthoek en biedt
+ * een hulpmethode voor de spawner om de exacte spawn-locatie net
+ * binnen de muur te bepalen.
+ */
 public class Hole extends RectangleEntity {
 
     private static final double SIZE = 16;
     private static final Color FILL_COLOR = Color.web("#0a0807");
     private static final Color STROKE_COLOR = Color.web("#3a322a");
 
+    /**
+     * Maakt een nieuw gat aan op de gegeven positie tegen de muur.
+     *
+     * @param location vaste positie van het gat in de speelruimte
+     */
     public Hole(Coordinate2D location) {
         super(location);
         setWidth(SIZE);
@@ -19,6 +30,13 @@ public class Hole extends RectangleEntity {
         setStrokeWidth(2);
     }
 
+    /**
+     * Bepaalt op basis van de positie van het gat een spawn-locatie
+     * die net binnen de muur ligt, zodat de zilvervis niet meteen
+     * tegen de schermrand vastloopt.
+     *
+     * @return coördinaat net binnen het speelveld
+     */
     public Coordinate2D getSpawnLocation() {
         Coordinate2D loc = getAnchorLocation();
         double x = loc.getX();
@@ -35,19 +53,5 @@ public class Hole extends RectangleEntity {
         }
 
         return new Coordinate2D(x, y);
-    }
-
-    public double getEntryAngle() {
-        Coordinate2D loc = getAnchorLocation();
-        if (loc.getY() < 50) {
-            return 0;
-        }
-        if (loc.getY() > 600) {
-            return 180;
-        }
-        if (loc.getX() < 50) {
-            return 90;
-        }
-        return 270;
     }
 }

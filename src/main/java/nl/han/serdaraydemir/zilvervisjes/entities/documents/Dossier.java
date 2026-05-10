@@ -3,6 +3,11 @@ package nl.han.serdaraydemir.zilvervisjes.entities.documents;
 import com.github.hanyaeger.api.Coordinate2D;
 import com.github.hanyaeger.api.Size;
 
+/**
+ * Dossier: papieren documentmap met kleine hitbox en lage health (10).
+ * Voorkeursdoelwit van de Papiervis. Wisselt visueel van frame
+ * (pristine, damaged, ruined) op basis van de resterende health.
+ */
 public class Dossier extends Document {
 
     private static final String SPRITE_PATH = "sprites/dossier.png";
@@ -17,6 +22,11 @@ public class Dossier extends Document {
     private static final double WIDTH = 36;
     private static final double HEIGHT = 48;
 
+    /**
+     * Maakt een nieuw dossier aan op de gegeven vaste positie.
+     *
+     * @param location positie van het dossier in de speelruimte
+     */
     public Dossier(Coordinate2D location) {
         super(SPRITE_PATH, new Size(WIDTH, HEIGHT), SPRITE_ROWS, SPRITE_COLUMNS,
                 location, MAX_HEALTH);

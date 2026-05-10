@@ -7,6 +7,11 @@ import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
 
 import java.util.List;
 
+/**
+ * Gestreepte zilvervis: beweegt in een zigzagpatroon naar zijn doelwit,
+ * waardoor hij lastiger te raken is dan de gewone zilvervis. Sterft net
+ * als de gewone zilvervis bij één treffer en levert vijftien punten op.
+ */
 public class StripedSilverfish extends Silverfish {
 
     private static final String SPRITE_PATH = "sprites/striped-silverfish.png";
@@ -23,6 +28,13 @@ public class StripedSilverfish extends Silverfish {
     private double targetAngle = 0;
     private boolean zigzagFlip = false;
 
+    /**
+     * Maakt een nieuwe gestreepte zilvervis aan op de gegeven locatie en
+     * richt deze direct naar het dichtstbijzijnde document.
+     *
+     * @param location startpositie van de zilvervis
+     * @param targets lijst van documenten die als doelwit kunnen dienen
+     */
     public StripedSilverfish(Coordinate2D location, List<Document> targets) {
         super(SPRITE_PATH, new Size(WIDTH, HEIGHT), location, targets, HEALTH, POINTS);
 

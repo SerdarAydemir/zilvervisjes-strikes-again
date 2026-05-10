@@ -10,11 +10,18 @@ import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Paperfish;
 import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.Silverfish;
 import nl.han.serdaraydemir.zilvervisjes.entities.silverfish.StripedSilverfish;
 import nl.han.serdaraydemir.zilvervisjes.game.Phase;
-import java.util.function.Consumer;
 
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
+/**
+ * Spawnt automatisch zilvervisjes uit willekeurige gaten. De pool van
+ * mogelijke soorten en het spawn-interval hangen af van de huidige
+ * spelfase (Kalm, Gemiddeld, Extreem). Elke gespawnde silverfish krijgt
+ * direct de meegegeven death-listener mee, zodat GameScene de score
+ * kan bijwerken bij elke uitschakeling.
+ */
 public class SilverfishSpawner extends EntitySpawner {
 
     private final List<Hole> holes;
@@ -23,13 +30,27 @@ public class SilverfishSpawner extends EntitySpawner {
     private final Consumer<Silverfish> deathListener;
     private Phase currentPhase = Phase.KALM;
 
-    public SilverfishSpawner(List<Hole> holes, List<Document> documents, Consumer<Silverfish> deathListener) {
+    /**
+     * Maakt een nieuwe spawner aan die start in de Kalm-fase.
+     *
+     * @param holes lijst van gaten waaruit zilvervisjes kunnen verschijnen
+     * @param documents lijst van documenten die als doelwit kunnen dienen
+     * @param deathListener callback die elke nieuwe silverfish meekrijgt
+     */
+    public SilverfishSpawner(List<Hole> holes, List<Document> documents,
+                             Consumer<Silverfish> deathListener) {
         super(Phase.KALM.getSpawnIntervalMs());
         this.holes = holes;
         this.documents = documents;
         this.deathListener = deathListener;
     }
 
+    /**
+     * Wijzigt de huidige spelfase. Past zowel de spawn-pool als het
+     * spawn-interval aan op basis van de waarden uit de Phase-enum.
+     *
+     * @param phase nieuwe spelfase
+     */
     public void setPhase(Phase phase) {
         this.currentPhase = phase;
         setIntervalInMs(phase.getSpawnIntervalMs());

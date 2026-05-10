@@ -6,6 +6,12 @@ import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
 
 import java.util.List;
 
+/**
+ * Ovenvisje: tank-soort die drie treffers nodig heeft om te sterven.
+ * Beweegt traag, maar wisselt visueel van frame bij elke ontvangen treffer
+ * (healthy, damaged, critical). Levert veertig punten op — de hoogste
+ * puntenwaarde van alle vier de soorten.
+ */
 public class Firebrat extends Silverfish {
 
     private static final String SPRITE_PATH = "sprites/firebrat.png";
@@ -23,6 +29,13 @@ public class Firebrat extends Silverfish {
     private static final int HEALTH = 3;
     private static final int POINTS = 40;
 
+    /**
+     * Maakt een nieuw ovenvisje aan op de gegeven locatie en richt deze
+     * direct naar het dichtstbijzijnde document.
+     *
+     * @param location startpositie van het ovenvisje
+     * @param targets lijst van documenten die als doelwit kunnen dienen
+     */
     public Firebrat(Coordinate2D location, List<Document> targets) {
         super(SPRITE_PATH, new Size(WIDTH, HEIGHT), SPRITE_ROWS, SPRITE_COLUMNS,
                 location, targets, HEALTH, POINTS);
@@ -34,6 +47,12 @@ public class Firebrat extends Silverfish {
         }
     }
 
+    /**
+     * Vermindert de health en werkt het sprite-frame bij om de toestand
+     * (healthy, damaged, critical) visueel weer te geven.
+     *
+     * @param amount hoeveelheid schade die wordt toegebracht
+     */
     @Override
     public void takeDamage(int amount) {
         super.takeDamage(amount);

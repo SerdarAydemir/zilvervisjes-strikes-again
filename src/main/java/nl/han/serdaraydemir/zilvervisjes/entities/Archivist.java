@@ -16,7 +16,14 @@ import nl.han.serdaraydemir.zilvervisjes.entities.weapons.Weapon;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class Archivist extends DynamicSpriteEntity implements KeyListener, SceneBorderTouchingWatcher {
+/**
+ * De door de speler bestuurbare archivaris. Beweegt in vier richtingen
+ * met de pijltjestoetsen, vuurt de insectenspray af met Spatie en de
+ * UV-lamp met X. Onthoudt de laatst bewogen richting, zodat schoten
+ * altijd in de kijkrichting van de archivaris vertrekken.
+ */
+public class Archivist extends DynamicSpriteEntity
+        implements KeyListener, SceneBorderTouchingWatcher {
 
     private static final String SPRITE_PATH = "sprites/archivist.png";
     private static final double SPRITE_WIDTH = 40;
@@ -28,6 +35,14 @@ public class Archivist extends DynamicSpriteEntity implements KeyListener, Scene
     private final Consumer<YaegerEntity> projectileSpawner;
     private double facingAngle = 0d;
 
+    /**
+     * Maakt een nieuwe archivaris aan op de gegeven locatie en koppelt
+     * een spawner-functie waarmee afgevuurde projectielen aan de scene
+     * worden toegevoegd.
+     *
+     * @param location startpositie van de archivaris
+     * @param projectileSpawner functie die nieuwe projectielen aan de scene toevoegt
+     */
     public Archivist(Coordinate2D location, Consumer<YaegerEntity> projectileSpawner) {
         super(SPRITE_PATH, location, new Size(SPRITE_WIDTH, SPRITE_HEIGHT));
         this.insectSpray = new InsectSpray();
@@ -35,6 +50,13 @@ public class Archivist extends DynamicSpriteEntity implements KeyListener, Scene
         this.projectileSpawner = projectileSpawner;
     }
 
+    /**
+     * Verwerkt de actuele set ingedrukte toetsen. Pijltjestoetsen
+     * regelen de beweging en de kijkrichting; Spatie vuurt de
+     * insectenspray af, X de UV-lamp.
+     *
+     * @param pressedKeys de op dit moment ingedrukte toetsen
+     */
     @Override
     public void onPressedKeysChange(Set<KeyCode> pressedKeys) {
         if (pressedKeys.contains(KeyCode.UP)) {
@@ -65,6 +87,13 @@ public class Archivist extends DynamicSpriteEntity implements KeyListener, Scene
         }
     }
 
+    /**
+     * Voorkomt dat de archivaris het speelveld verlaat door zijn
+     * snelheid op nul te zetten en hem precies binnen de rand te
+     * plaatsen wanneer hij een schermrand raakt.
+     *
+     * @param border de schermrand die wordt aangeraakt
+     */
     @Override
     public void notifyBoundaryTouching(SceneBorder border) {
         setSpeed(0);

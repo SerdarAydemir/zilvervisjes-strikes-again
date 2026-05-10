@@ -5,15 +5,21 @@ import com.github.hanyaeger.api.Coordinate2D;
 import com.github.hanyaeger.api.entities.impl.TextEntity;
 import com.github.hanyaeger.api.scenes.StaticScene;
 import com.github.hanyaeger.api.userinput.KeyListener;
+import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import nl.han.serdaraydemir.zilvervisjes.ZilvervisjesStrikesAgain;
-import javafx.application.Platform;
 
 import java.util.Set;
 
+/**
+ * Het eindscherm dat verschijnt zodra alle documenten zijn vernietigd.
+ * Toont de eindscore en de overleefde tijd, en biedt de speler de
+ * keuze om opnieuw te spelen (Enter — slaat de openingssequentie over)
+ * of terug te keren naar het hoofdmenu (M).
+ */
 public class GameOverScene extends StaticScene implements KeyListener {
 
     private static final Color HEADING_COLOR = Color.web("#c0392b");
@@ -24,6 +30,14 @@ public class GameOverScene extends StaticScene implements KeyListener {
     private final int finalScore;
     private final String finalTime;
 
+    /**
+     * Maakt een nieuw game-overscherm aan met de eindresultaten van
+     * de afgelopen spelsessie.
+     *
+     * @param game referentie naar de hoofdklasse voor scene-overgangen
+     * @param finalScore eindscore van de speler
+     * @param finalTime overleefde tijd, geformatteerd als MM:SS
+     */
     public GameOverScene(ZilvervisjesStrikesAgain game, int finalScore, String finalTime) {
         this.game = game;
         this.finalScore = finalScore;
@@ -44,12 +58,19 @@ public class GameOverScene extends StaticScene implements KeyListener {
         addEntity(buildMenuHint());
     }
 
+    /**
+     * Verwerkt toetsindrukken op het game-overscherm. Enter start een
+     * nieuwe spelsessie zonder openingssequentie; M keert terug naar
+     * het hoofdmenu.
+     *
+     * @param pressedKeys de op dit moment ingedrukte toetsen
+     */
     @Override
     public void onPressedKeysChange(Set<KeyCode> pressedKeys) {
         if (pressedKeys.contains(KeyCode.ENTER)) {
             Platform.runLater(game::startNewGame);
         } else if (pressedKeys.contains(KeyCode.M)) {
-            Platform.runLater(() -> game.setActiveScene(0));
+            Platform.runLater(() -> game.setActiveScene(ZilvervisjesStrikesAgain.SCENE_START));
         }
     }
 

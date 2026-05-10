@@ -6,6 +6,11 @@ import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
 
 import java.util.List;
 
+/**
+ * Gewone zilvervis: de referentie-soort in het spel. Beweegt met
+ * gemiddelde snelheid in een rechte lijn naar het dichtstbijzijnde
+ * document en sterft bij één treffer.
+ */
 public class CommonSilverfish extends Silverfish {
 
     private static final String SPRITE_PATH = "sprites/common-silverfish.png";
@@ -16,6 +21,13 @@ public class CommonSilverfish extends Silverfish {
     private static final int HEALTH = 1;
     private static final int POINTS = 10;
 
+    /**
+     * Maakt een nieuwe gewone zilvervis aan op de gegeven locatie en
+     * richt deze direct naar het dichtstbijzijnde document.
+     *
+     * @param location startpositie van de zilvervis
+     * @param targets lijst van documenten die als doelwit kunnen dienen
+     */
     public CommonSilverfish(Coordinate2D location, List<Document> targets) {
         super(SPRITE_PATH, new Size(WIDTH, HEIGHT), location, targets, HEALTH, POINTS);
 

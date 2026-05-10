@@ -15,6 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Toont de openingssequentie aan het begin van een spelsessie. Beheert
+ * een interne state machine die in drie fasen verloopt: het verhaal-
+ * tekstblok, de slotzin "...zo lang mogelijk." en de aftelteller
+ * 3 - 2 - 1. Roept een callback aan zodra de sequentie afgerond is,
+ * waarna GameScene de gameplay activeert. Wordt overgeslagen wanneer
+ * GameScene met skipOpening = true wordt aangemaakt.
+ */
 public class OpeningSequence {
 
     private static final int TICK_INTERVAL_MS = 50;
@@ -58,6 +66,14 @@ public class OpeningSequence {
     private Phase phase = Phase.PHASE1_FADE_IN;
     private int ticksInPhase = 0;
 
+    /**
+     * Maakt een nieuwe openingssequentie aan.
+     *
+     * @param sceneWidth breedte van de scene in pixels
+     * @param sceneHeight hoogte van de scene in pixels
+     * @param sceneAddEntity functie waarmee entiteiten aan de scene toegevoegd worden
+     * @param onComplete callback die wordt aangeroepen zodra de sequentie afgerond is
+     */
     public OpeningSequence(double sceneWidth, double sceneHeight,
                            Consumer<YaegerEntity> sceneAddEntity,
                            Runnable onComplete) {
@@ -67,6 +83,11 @@ public class OpeningSequence {
         this.onComplete = onComplete;
     }
 
+    /**
+     * Voegt de overlay, het verhaal-tekstblok, de slotzin, de aftelteller
+     * en de besturings-hint aan de scene toe. Moet aangeroepen worden
+     * voordat de bijbehorende driver-timer wordt geactiveerd.
+     */
     public void install() {
         blackoutOverlay = new BlackoutOverlay(new Coordinate2D(0, 0));
         blackoutOverlay.setWidth(sceneWidth);
@@ -120,6 +141,13 @@ public class OpeningSequence {
         sceneAddEntity.accept(controlsHint);
     }
 
+    /**
+     * Geeft een timer terug die de state machine van de sequentie elke
+     * 50 milliseconden vooruit beweegt. Wordt door GameScene aan zijn
+     * setupTimers() toegevoegd.
+     *
+     * @return de driver-timer voor deze sequentie
+     */
     public Timer createDriver() {
         return new DriverTimer();
     }

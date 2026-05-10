@@ -14,6 +14,13 @@ import nl.han.serdaraydemir.zilvervisjes.ZilvervisjesStrikesAgain;
 
 import java.util.Set;
 
+/**
+ * Het hulpscherm met spelregels en besturing. Wordt bereikt vanuit
+ * het startscherm met de H-toets. Toont drie secties: het doel van
+ * het spel, de besturing, en de vier zilvervis-soorten met hun
+ * puntenwaarde. Reageert op Enter (start een spelsessie) en op
+ * M of Esc (terug naar het hoofdmenu).
+ */
 public class HelpScene extends StaticScene implements KeyListener {
 
     private static final Color BACKGROUND_COLOR = Color.web("#14110e");
@@ -24,6 +31,12 @@ public class HelpScene extends StaticScene implements KeyListener {
 
     private final ZilvervisjesStrikesAgain game;
 
+    /**
+     * Maakt een nieuw hulpscherm aan en koppelt de referentie naar
+     * de hoofdklasse voor scene-overgangen.
+     *
+     * @param game referentie naar de hoofdklasse
+     */
     public HelpScene(ZilvervisjesStrikesAgain game) {
         this.game = game;
     }
@@ -56,6 +69,13 @@ public class HelpScene extends StaticScene implements KeyListener {
         addEntity(buildMenuHint());
     }
 
+    /**
+     * Verwerkt toetsindrukken op het hulpscherm. Enter start direct
+     * een spelsessie (inclusief openingssequentie); M of Esc keert
+     * terug naar het hoofdmenu.
+     *
+     * @param pressedKeys de op dit moment ingedrukte toetsen
+     */
     @Override
     public void onPressedKeysChange(Set<KeyCode> pressedKeys) {
         if (pressedKeys.contains(KeyCode.ENTER)) {

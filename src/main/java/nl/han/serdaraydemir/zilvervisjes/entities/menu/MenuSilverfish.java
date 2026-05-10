@@ -7,7 +7,15 @@ import com.github.hanyaeger.api.entities.SceneBorderTouchingWatcher;
 import com.github.hanyaeger.api.entities.impl.DynamicSpriteEntity;
 import com.github.hanyaeger.api.scenes.SceneBorder;
 
-public class MenuSilverfish extends DynamicSpriteEntity implements SceneBorderTouchingWatcher {
+/**
+ * Decoratieve zilvervis die over het hoofdmenu zwemt. Heeft geen
+ * gameplay-rol: kan niet geraakt worden, doet geen schade en verdwijnt
+ * niet. Wanneer de zilvervis een schermrand raakt, wordt hij binnen
+ * de scene gehouden en krijgt hij een nieuwe willekeurige richting
+ * die naar binnen wijst.
+ */
+public class MenuSilverfish extends DynamicSpriteEntity
+        implements SceneBorderTouchingWatcher {
 
     private static final String SPRITE_PATH = "sprites/paperfish.png";
     private static final double WIDTH = 33;
@@ -15,6 +23,14 @@ public class MenuSilverfish extends DynamicSpriteEntity implements SceneBorderTo
 
     private final double speed;
 
+    /**
+     * Maakt een nieuwe menu-zilvervis aan op de gegeven locatie en
+     * richt deze direct in de meegegeven hoek.
+     *
+     * @param location startpositie van de zilvervis
+     * @param speed bewegingssnelheid in pixels per tick
+     * @param angle starthoek in graden (Yaeger-kompasconventie)
+     */
     public MenuSilverfish(Coordinate2D location, double speed, double angle) {
         super(SPRITE_PATH, location, new Size(WIDTH, HEIGHT));
         this.speed = speed;
@@ -23,6 +39,13 @@ public class MenuSilverfish extends DynamicSpriteEntity implements SceneBorderTo
         aimAt(angle);
     }
 
+    /**
+     * Wordt aangeroepen wanneer de zilvervis een schermrand raakt.
+     * Duwt de zilvervis terug binnen de scene en kiest een willekeurige
+     * nieuwe richting die naar binnen wijst.
+     *
+     * @param border de aangeraakte schermrand
+     */
     @Override
     public void notifyBoundaryTouching(SceneBorder border) {
         ensureInsideBounds(border);

@@ -24,7 +24,15 @@ import nl.han.serdaraydemir.zilvervisjes.spawners.SilverfishSpawner;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameScene extends DynamicScene implements EntitySpawnerContainer, TimerContainer {
+/**
+ * Het hoofdspeelscherm van het spel. Bevat de archivaris, de tien gaten,
+ * de vier documenten, de spawner, het dashboard en optioneel de
+ * openingssequentie. Beheert de score, de verstreken tijd en de
+ * automatische fasewisselingen (Kalm, Gemiddeld, Extreem) op basis van
+ * de speeltijd.
+ */
+public class GameScene extends DynamicScene
+        implements EntitySpawnerContainer, TimerContainer {
 
     private static final int GEMIDDELD_START_MS = 60_000;
     private static final int EXTREEM_START_MS = 150_000;
@@ -46,10 +54,24 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
     private boolean gameOverTriggered = false;
     private boolean openingComplete = false;
 
+    /**
+     * Maakt een nieuwe GameScene aan waarin de openingssequentie
+     * volledig wordt afgespeeld voordat de gameplay begint.
+     *
+     * @param game referentie naar de hoofdklasse voor scene-overgangen
+     */
     public GameScene(ZilvervisjesStrikesAgain game) {
         this(game, false);
     }
 
+    /**
+     * Maakt een nieuwe GameScene aan met de mogelijkheid om de
+     * openingssequentie over te slaan. Wordt onder andere gebruikt
+     * bij een herstart vanuit het game-overscherm.
+     *
+     * @param game referentie naar de hoofdklasse voor scene-overgangen
+     * @param skipOpening true om de openingssequentie over te slaan
+     */
     public GameScene(ZilvervisjesStrikesAgain game, boolean skipOpening) {
         this.game = game;
         this.skipOpening = skipOpening;
@@ -132,10 +154,12 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
         }
     }
 
-    public Phase getCurrentPhase() {
-        return currentPhase;
-    }
-
+    /**
+     * Voegt het meegegeven aantal punten toe aan de huidige score
+     * en werkt de scoreweergave bij.
+     *
+     * @param points aantal punten om toe te voegen
+     */
     public void addScore(int points) {
         if (scoreDisplay != null) {
             scoreDisplay.addPoints(points);

@@ -7,6 +7,7 @@ import com.github.hanyaeger.api.TimerContainer;
 import com.github.hanyaeger.api.entities.impl.TextEntity;
 import com.github.hanyaeger.api.scenes.DynamicScene;
 import com.github.hanyaeger.api.userinput.KeyListener;
+import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -14,12 +15,19 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import nl.han.serdaraydemir.zilvervisjes.ZilvervisjesStrikesAgain;
 import nl.han.serdaraydemir.zilvervisjes.entities.menu.MenuSilverfish;
-import javafx.application.Platform;
 
 import java.util.Random;
 import java.util.Set;
 
-public class StartScene extends DynamicScene implements KeyListener, TimerContainer {
+/**
+ * Het startscherm van de applicatie. Toont de titel, ondertitel, een
+ * knipperende start-prompt en een hint naar het hulpscherm. Op de
+ * achtergrond zwemmen tien decoratieve menu-zilvervisjes als sfeer-
+ * element. Reageert op de Enter-toets (start een nieuwe spelsessie)
+ * en op de H-toets (opent het hulpscherm).
+ */
+public class StartScene extends DynamicScene
+        implements KeyListener, TimerContainer {
 
     private static final Color BACKGROUND_COLOR = Color.web("#14110e");
     private static final Color TITLE_COLOR = Color.web("#e8d8a8");
@@ -36,6 +44,12 @@ public class StartScene extends DynamicScene implements KeyListener, TimerContai
     private TextEntity prompt;
     private double promptOpacityPhase = 0;
 
+    /**
+     * Maakt een nieuw startscherm aan en koppelt de referentie naar
+     * de hoofdklasse voor scene-overgangen.
+     *
+     * @param game referentie naar de hoofdklasse
+     */
     public StartScene(ZilvervisjesStrikesAgain game) {
         this.game = game;
     }
@@ -61,6 +75,13 @@ public class StartScene extends DynamicScene implements KeyListener, TimerContai
         addTimer(new PromptPulseTimer());
     }
 
+    /**
+     * Verwerkt toetsindrukken op het startscherm. Enter start een
+     * nieuwe spelsessie met de volledige openingssequentie; H opent
+     * het hulpscherm.
+     *
+     * @param pressedKeys de op dit moment ingedrukte toetsen
+     */
     @Override
     public void onPressedKeysChange(Set<KeyCode> pressedKeys) {
         if (pressedKeys.contains(KeyCode.ENTER)) {

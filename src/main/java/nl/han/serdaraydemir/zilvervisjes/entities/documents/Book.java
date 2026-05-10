@@ -3,6 +3,11 @@ package nl.han.serdaraydemir.zilvervisjes.entities.documents;
 import com.github.hanyaeger.api.Coordinate2D;
 import com.github.hanyaeger.api.Size;
 
+/**
+ * Boek: gebonden naslagwerk met grote hitbox en hoge health (20).
+ * Verdraagt aanzienlijk meer schade dan een dossier en wisselt visueel
+ * van frame (pristine, damaged, ruined) op basis van de resterende health.
+ */
 public class Book extends Document {
 
     private static final String SPRITE_PATH = "sprites/book.png";
@@ -17,6 +22,11 @@ public class Book extends Document {
     private static final double WIDTH = 60;
     private static final double HEIGHT = 80;
 
+    /**
+     * Maakt een nieuw boek aan op de gegeven vaste positie.
+     *
+     * @param location positie van het boek in de speelruimte
+     */
     public Book(Coordinate2D location) {
         super(SPRITE_PATH, new Size(WIDTH, HEIGHT), SPRITE_ROWS, SPRITE_COLUMNS,
                 location, MAX_HEALTH);
