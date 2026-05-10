@@ -1,7 +1,7 @@
 package nl.han.serdaraydemir.zilvervisjes.entities.silverfish;
 
 import com.github.hanyaeger.api.Coordinate2D;
-import javafx.scene.paint.Color;
+import com.github.hanyaeger.api.Size;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Dossier;
 
@@ -9,25 +9,22 @@ import java.util.List;
 
 public class Paperfish extends Silverfish {
 
+    private static final String SPRITE_PATH = "sprites/paperfish.png";
+    private static final double WIDTH = 22;
+    private static final double HEIGHT = 44;
+
     private static final double SPEED = 1.8;
     private static final int HEALTH = 1;
     private static final int POINTS = 20;
     private static final int ATTACK_DAMAGE = 3;
-    private static final double WIDTH = 22;
-    private static final double HEIGHT = 8;
 
     public Paperfish(Coordinate2D location, List<Document> targets) {
-        super(location, targets, HEALTH, POINTS);
-        setWidth(WIDTH);
-        setHeight(HEIGHT);
-        setFill(Color.web("#e8e0c8"));
-        setStrokeColor(Color.web("#7a6f4e"));
-        setStrokeWidth(2);
+        super(SPRITE_PATH, new Size(WIDTH, HEIGHT), location, targets, HEALTH, POINTS);
 
         Document closest = findClosestDocumentTo(location);
         if (closest != null) {
             double angle = location.angleTo(closest.getAnchorLocation());
-            setMotion(SPEED, angle);
+            aimAt(angle);
         }
     }
 

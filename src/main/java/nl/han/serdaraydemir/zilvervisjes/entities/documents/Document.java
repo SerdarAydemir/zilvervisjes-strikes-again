@@ -1,19 +1,23 @@
 package nl.han.serdaraydemir.zilvervisjes.entities.documents;
+import com.github.hanyaeger.api.AnchorPoint;
 
 import com.github.hanyaeger.api.Coordinate2D;
+import com.github.hanyaeger.api.Size;
 import com.github.hanyaeger.api.entities.Collider;
-import com.github.hanyaeger.api.entities.impl.RectangleEntity;
+import com.github.hanyaeger.api.entities.impl.SpriteEntity;
 
 import java.util.function.Consumer;
 
-public abstract class Document extends RectangleEntity implements Collider {
+public abstract class Document extends SpriteEntity implements Collider {
 
     private final int maxHealth;
     private int health;
     private Consumer<Document> destructionListener = doc -> {};
 
-    protected Document(Coordinate2D location, int maxHealth) {
-        super(location);
+    protected Document(String spritePath, Size size, int rows, int columns,
+                       Coordinate2D location, int maxHealth) {
+        super(spritePath, location, size, rows, columns);
+        setAnchorPoint(AnchorPoint.CENTER_CENTER);
         this.maxHealth = maxHealth;
         this.health = maxHealth;
     }
@@ -34,6 +38,10 @@ public abstract class Document extends RectangleEntity implements Collider {
 
     public int getHealth() {
         return health;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
     }
 
     public boolean isDestroyed() {

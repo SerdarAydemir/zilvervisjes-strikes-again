@@ -1,42 +1,43 @@
 package nl.han.serdaraydemir.zilvervisjes.entities.silverfish;
 
 import com.github.hanyaeger.api.Coordinate2D;
-import javafx.scene.paint.Color;
+import com.github.hanyaeger.api.Size;
 import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
 
 import java.util.List;
 
 public class Firebrat extends Silverfish {
 
+    private static final String SPRITE_PATH = "sprites/firebrat.png";
+    private static final int SPRITE_ROWS = 1;
+    private static final int SPRITE_COLUMNS = 3;
+
+    private static final int FRAME_HEALTHY = 0;
+    private static final int FRAME_DAMAGED = 1;
+    private static final int FRAME_CRITICAL = 2;
+
+    private static final double WIDTH = 26;
+    private static final double HEIGHT = 52;
+
     private static final double SPEED = 0.8;
     private static final int HEALTH = 3;
     private static final int POINTS = 40;
-    private static final double WIDTH = 26;
-    private static final double HEIGHT = 11;
-
-    private static final Color COLOR_FULL = Color.web("#7a1f1a");
-    private static final Color COLOR_DAMAGED = Color.web("#c14a1a");
-    private static final Color COLOR_CRITICAL = Color.web("#f08c2a");
 
     public Firebrat(Coordinate2D location, List<Document> targets) {
-        super(location, targets, HEALTH, POINTS);
-        setWidth(WIDTH);
-        setHeight(HEIGHT);
-        setFill(COLOR_FULL);
-        setStrokeColor(Color.web("#3a0d08"));
-        setStrokeWidth(2);
+        super(SPRITE_PATH, new Size(WIDTH, HEIGHT), SPRITE_ROWS, SPRITE_COLUMNS,
+                location, targets, HEALTH, POINTS);
 
         Document closest = findClosestDocumentTo(location);
         if (closest != null) {
             double angle = location.angleTo(closest.getAnchorLocation());
-            setMotion(SPEED, angle);
+            aimAt(angle);
         }
     }
 
     @Override
     public void takeDamage(int amount) {
         super.takeDamage(amount);
-        updateColorByHealth();
+        updateFrameByHealth();
     }
 
     @Override
@@ -44,14 +45,14 @@ public class Firebrat extends Silverfish {
         return SPEED;
     }
 
-    private void updateColorByHealth() {
+    private void updateFrameByHealth() {
         int hp = getHealth();
         if (hp >= 3) {
-            setFill(COLOR_FULL);
+            setCurrentFrameIndex(FRAME_HEALTHY);
         } else if (hp == 2) {
-            setFill(COLOR_DAMAGED);
+            setCurrentFrameIndex(FRAME_DAMAGED);
         } else if (hp == 1) {
-            setFill(COLOR_CRITICAL);
+            setCurrentFrameIndex(FRAME_CRITICAL);
         }
     }
 }

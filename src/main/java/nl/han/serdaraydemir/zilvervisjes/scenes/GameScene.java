@@ -8,6 +8,7 @@ import com.github.hanyaeger.api.scenes.DynamicScene;
 import javafx.scene.paint.Color;
 import nl.han.serdaraydemir.zilvervisjes.ZilvervisjesStrikesAgain;
 import nl.han.serdaraydemir.zilvervisjes.entities.Archivist;
+import nl.han.serdaraydemir.zilvervisjes.entities.DepotFloor;
 import nl.han.serdaraydemir.zilvervisjes.entities.Hole;
 import nl.han.serdaraydemir.zilvervisjes.entities.dashboard.PhaseDisplay;
 import nl.han.serdaraydemir.zilvervisjes.entities.dashboard.ScoreDisplay;
@@ -25,8 +26,8 @@ import java.util.List;
 
 public class GameScene extends DynamicScene implements EntitySpawnerContainer, TimerContainer {
 
-    private static final int GEMIDDELD_START_MS = 15_000;
-    private static final int EXTREEM_START_MS = 30_000;
+    private static final int GEMIDDELD_START_MS = 60_000;
+    private static final int EXTREEM_START_MS = 150_000;
 
     private final ZilvervisjesStrikesAgain game;
     private final boolean skipOpening;
@@ -61,20 +62,26 @@ public class GameScene extends DynamicScene implements EntitySpawnerContainer, T
 
     @Override
     public void setupEntities() {
-        holes.add(new Hole(new Coordinate2D(250, 20)));
-        holes.add(new Hole(new Coordinate2D(500, 20)));
-        holes.add(new Hole(new Coordinate2D(780, 20)));
-        holes.add(new Hole(new Coordinate2D(1030, 20)));
-        holes.add(new Hole(new Coordinate2D(20, 360)));
-        holes.add(new Hole(new Coordinate2D(1240, 360)));
+        addEntity(new DepotFloor(getWidth(), getHeight()));
+
+        holes.add(new Hole(new Coordinate2D(250, 18)));
+        holes.add(new Hole(new Coordinate2D(500, 18)));
+        holes.add(new Hole(new Coordinate2D(780, 18)));
+        holes.add(new Hole(new Coordinate2D(1030, 18)));
+        holes.add(new Hole(new Coordinate2D(18, 360)));
+        holes.add(new Hole(new Coordinate2D(1246, 360)));
+        holes.add(new Hole(new Coordinate2D(250, 686)));
+        holes.add(new Hole(new Coordinate2D(500, 686)));
+        holes.add(new Hole(new Coordinate2D(780, 686)));
+        holes.add(new Hole(new Coordinate2D(1030, 686)));
         for (Hole hole : holes) {
             addEntity(hole);
         }
 
-        documents.add(new Dossier(new Coordinate2D(200, 200)));
-        documents.add(new Dossier(new Coordinate2D(1050, 200)));
-        documents.add(new Book(new Coordinate2D(300, 500)));
-        documents.add(new Book(new Coordinate2D(900, 500)));
+        documents.add(new Dossier(new Coordinate2D(350, 220)));
+        documents.add(new Dossier(new Coordinate2D(920, 220)));
+        documents.add(new Book(new Coordinate2D(350, 400)));
+        documents.add(new Book(new Coordinate2D(920, 400)));
         for (Document doc : documents) {
             doc.setDestructionListener(this::onDocumentDestroyed);
             addEntity(doc);

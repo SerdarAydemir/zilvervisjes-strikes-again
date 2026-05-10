@@ -1,45 +1,48 @@
 package nl.han.serdaraydemir.zilvervisjes.entities.silverfish;
-// Step 1 Creating Silverfish
+
 import com.github.hanyaeger.api.Coordinate2D;
-import com.github.hanyaeger.api.entities.SceneBorderCrossingWatcher;
-import com.github.hanyaeger.api.entities.impl.DynamicRectangleEntity;
-import com.github.hanyaeger.api.scenes.SceneBorder;
-import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
-//Step 2 Adding Collided
-import com.github.hanyaeger.api.entities.Collided;
-import com.github.hanyaeger.api.entities.Collider;
-// Step 3 Adding Timer
+import com.github.hanyaeger.api.Size;
 import com.github.hanyaeger.api.Timer;
 import com.github.hanyaeger.api.TimerContainer;
-// Step 4 Adding Score Function
-import java.util.function.Consumer;
+import com.github.hanyaeger.api.entities.Collided;
+import com.github.hanyaeger.api.entities.Collider;
+import com.github.hanyaeger.api.entities.SceneBorderCrossingWatcher;
+import com.github.hanyaeger.api.entities.impl.DynamicSpriteEntity;
+import com.github.hanyaeger.api.scenes.SceneBorder;
+import nl.han.serdaraydemir.zilvervisjes.entities.documents.Document;
+import com.github.hanyaeger.api.AnchorPoint;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public abstract class Silverfish extends DynamicRectangleEntity
+public abstract class Silverfish extends DynamicSpriteEntity
         implements SceneBorderCrossingWatcher, Collided, Collider, TimerContainer {
 
-    // 1. STATIC CONSTANTS
     private static final int TARGET_REFRESH_INTERVAL_MS = 500;
     private static final int ATTACK_INTERVAL_MS = 3000;
 
-    // 2. INSTANCE FIELDS
     private final List<Document> targets;
     private final int pointsValue;
-    private Consumer<Silverfish> deathListener = silverfish -> {};
     private int health;
     private Document currentTarget = null;
     private Document attackingTarget = null;
+    private Consumer<Silverfish> deathListener = silverfish -> {};
 
-    // 3. CONSTRUCTOR
-    protected Silverfish(Coordinate2D location, List<Document> targets, int health, int pointsValue) {
-        super(location);
+    protected Silverfish(String spritePath, Size size, Coordinate2D location,
+                         List<Document> targets, int health, int pointsValue) {
+        this(spritePath, size, 1, 1, location, targets, health, pointsValue);
+    }
+
+    protected Silverfish(String spritePath, Size size, int rows, int columns,
+                         Coordinate2D location, List<Document> targets,
+                         int health, int pointsValue) {
+        super(spritePath, location, size, rows, columns);
+        setAnchorPoint(AnchorPoint.CENTER_CENTER);
         this.targets = targets;
         this.health = health;
         this.pointsValue = pointsValue;
     }
 
-    // 4. PUBLIC METHODS — API: For Yaeger and other classes
     @Override
     public void setupTimers() {
         addTimer(new TargetRefreshTimer(TARGET_REFRESH_INTERVAL_MS));
@@ -82,13 +85,12 @@ public abstract class Silverfish extends DynamicRectangleEntity
         return health;
     }
 
-    public void setDeathListener(Consumer<Silverfish> listener) {     // ← BU 5 SATIR YENİ
+    public void setDeathListener(Consumer<Silverfish> listener) {
         if (listener != null) {
             this.deathListener = listener;
         }
     }
 
-    // 5. PROTECTED METHODS — For subclasses
     protected abstract double getSpeedValue();
 
     protected int getAttackDamage() {
@@ -96,11 +98,16 @@ public abstract class Silverfish extends DynamicRectangleEntity
     }
 
     protected void onTargetAngleUpdated(double angle) {
-
+        // Subclasses can override to track changes in target heading
     }
 
     protected List<Document> getTargets() {
         return targets;
+    }
+
+    protected void aimAt(double angle) {
+        setMotion(getSpeedValue(), angle);
+        setRotate(angle + 180);
     }
 
     protected Document findClosestDocumentTo(Coordinate2D from) {
@@ -117,7 +124,6 @@ public abstract class Silverfish extends DynamicRectangleEntity
         return closest;
     }
 
-    // 6. PRIVATE METHODS — The details that only this class knows
     private void refreshTarget() {
         if (attackingTarget != null && !attackingTarget.isDestroyed()) {
             return;
@@ -134,7 +140,7 @@ public abstract class Silverfish extends DynamicRectangleEntity
         currentTarget = closest;
         double angle = getAnchorLocation().angleTo(closest.getAnchorLocation());
         onTargetAngleUpdated(angle);
-        setMotion(getSpeedValue(), angle);
+        aimAt(angle);
     }
 
     private void attackTick() {
@@ -143,7 +149,6 @@ public abstract class Silverfish extends DynamicRectangleEntity
         }
     }
 
-    // 7. INNER CLASSES —
     private class TargetRefreshTimer extends Timer {
         protected TargetRefreshTimer(int intervalInMs) {
             super(intervalInMs);
@@ -166,4 +171,3 @@ public abstract class Silverfish extends DynamicRectangleEntity
         }
     }
 }
-
