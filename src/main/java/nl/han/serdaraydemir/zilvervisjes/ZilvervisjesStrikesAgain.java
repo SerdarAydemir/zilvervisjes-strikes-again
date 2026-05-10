@@ -4,6 +4,7 @@ import com.github.hanyaeger.api.Size;
 import com.github.hanyaeger.api.YaegerGame;
 import nl.han.serdaraydemir.zilvervisjes.scenes.GameOverScene;
 import nl.han.serdaraydemir.zilvervisjes.scenes.GameScene;
+import nl.han.serdaraydemir.zilvervisjes.scenes.HelpScene;
 import nl.han.serdaraydemir.zilvervisjes.scenes.StartScene;
 
 public class ZilvervisjesStrikesAgain extends YaegerGame {
@@ -11,6 +12,7 @@ public class ZilvervisjesStrikesAgain extends YaegerGame {
     public static final int SCENE_START = 0;
     public static final int SCENE_GAME = 1;
     public static final int SCENE_GAME_OVER = 2;
+    public static final int SCENE_HELP = 3;
 
     public static void main(String[] args) {
         launch(args);
@@ -26,6 +28,7 @@ public class ZilvervisjesStrikesAgain extends YaegerGame {
     public void setupScenes() {
         addScene(SCENE_START, new StartScene(this));
         addScene(SCENE_GAME, new GameScene(this));
+        addScene(SCENE_HELP, new HelpScene(this));
     }
 
     public void startNewGame() {

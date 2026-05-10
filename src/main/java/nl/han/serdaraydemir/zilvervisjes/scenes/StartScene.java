@@ -27,7 +27,7 @@ public class StartScene extends DynamicScene implements KeyListener, TimerContai
     private static final Color PROMPT_COLOR = Color.web("#9a8c5a");
     private static final Color HINT_COLOR = Color.web("#e8d8a8");
 
-    private static final int MENU_SILVERFISH_COUNT = 5;
+    private static final int MENU_SILVERFISH_COUNT = 10;
     private static final int PROMPT_PULSE_INTERVAL_MS = 50;
 
     private final ZilvervisjesStrikesAgain game;
@@ -65,6 +65,8 @@ public class StartScene extends DynamicScene implements KeyListener, TimerContai
     public void onPressedKeysChange(Set<KeyCode> pressedKeys) {
         if (pressedKeys.contains(KeyCode.ENTER)) {
             Platform.runLater(() -> game.startNewGame(false));
+        } else if (pressedKeys.contains(KeyCode.H)) {
+            Platform.runLater(() -> game.setActiveScene(ZilvervisjesStrikesAgain.SCENE_HELP));
         }
     }
 
@@ -114,7 +116,7 @@ public class StartScene extends DynamicScene implements KeyListener, TimerContai
     private TextEntity buildControlsHint() {
         TextEntity hint = new TextEntity(
                 new Coordinate2D(getWidth() / 2, getHeight() - 80),
-                "CONTROLS: Pijltjes = Bewegen  /  Spatie = Spray  /  X = UV-lamp"
+                "Druk op H voor hoe te spelen"
         );
         hint.setAnchorPoint(AnchorPoint.CENTER_CENTER);
         hint.setFill(HINT_COLOR);
