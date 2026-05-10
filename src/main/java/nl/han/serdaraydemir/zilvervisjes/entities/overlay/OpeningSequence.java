@@ -31,7 +31,7 @@ public class OpeningSequence {
     private static final Color HINT_COLOR = Color.web("#c9b87a");
 
     private static final String[] STORY_LINES = {
-            "Het is laat in de avond. Diep onder het Regionaal Archief Nijmegen — in het Depot,",
+            "Het is laat in de avond. Diep onder het Archief — in het Depot,",
             "waar honderden jaren aan dossiers en boeken bewaard worden — gaat het licht aan.",
             "",
             "Een archivaris is opgeroepen voor een spoedklus: de zilvervisjes zijn terug,",
